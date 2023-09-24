@@ -18,4 +18,3 @@ contract CarteBlanche is IRulebook {
         return ISockSwap(daSwap)._regCheck(id);
     }
 }
-j
