@@ -77,7 +77,7 @@ contract SockSwap is Ownable, ERC6909, ISockSwap {
         emit NewSockDiscovered(id, msg.sender, photo);
     }
 
-    function _charCount(uint256 id) private returns (uint256) {
+    function _charCount(uint256 id) private view returns (uint256) {
         SockSnap memory to_check = registry[id];
         return
             LibString.runeCount(to_check.category) +
@@ -85,7 +85,7 @@ contract SockSwap is Ownable, ERC6909, ISockSwap {
             LibString.runeCount(to_check.size);
     }
 
-    function _regCheck(uint256 id) external returns (bool) {
+    function _regCheck(uint256 id) external view returns (bool) {
         return _charCount(id) > 0;
     }
 

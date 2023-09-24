@@ -10,11 +10,11 @@ contract CarteBlanche is IRulebook {
         daSwap = parent;
     }
 
-    function check(uint256 id) external returns (bool) {
+    function check(uint256 id) external view returns (bool) {
         return !ISockSwap(daSwap)._regCheck(id);
     }
 
-    function exists(uint256 id, uint256 amount) external returns (bool) {
+    function exists(uint256 id, uint256 _amount) external returns (bool) {
         return ISockSwap(daSwap)._regCheck(id);
     }
 }

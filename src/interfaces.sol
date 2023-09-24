@@ -3,7 +3,7 @@
 pragma solidity ^0.8.21;
 
 interface ISockSwap {
-    function _regCheck(uint256 id) external returns (bool registered);
+    function _regCheck(uint256 id) external view returns (bool registered);
 }
 
 interface IRulebook {
@@ -11,7 +11,7 @@ interface IRulebook {
     function timeout() external view returns (uint256);
 
     // is this an unidentified sock
-    function check(uint256 id) external returns (bool valid);
+    function check(uint256 id) external view returns (bool valid);
 
     // there exist this many of an existing identified sock
     function exists(uint256 id, uint256 amount) external returns (bool valid);
