@@ -41,14 +41,14 @@ contract SockSwap is Ownable, ERC6909, ISockSwap {
         uint256 id
     ) public view virtual override returns (string memory) {
         if (totalSupply(id) == 0) revert TokenDoesNotExist();
-        string memory name = rules.check(id)
+        string memory n = rules.check(id)
             ? LibString.concat(registry[id].category, " socks")
             : "not a sock";
         return
             string(
                 abi.encodePacked(
                     '{"name":"',
-                    name,
+                    n,
                     '", "image":"',
                     registry[id].photo,
                     '", "attributes": [{ "trait_type": "size", "value": ',
