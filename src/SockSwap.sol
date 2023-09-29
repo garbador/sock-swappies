@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT+RTL
 pragma solidity ^0.8.21;
 import "./interfaces.sol";
 import "./Rulebook.sol";
