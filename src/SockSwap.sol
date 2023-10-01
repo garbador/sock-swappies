@@ -20,12 +20,15 @@ contract SockSwap is Ownable, ERC6909, ISockSwap {
         string size; // .. what size foot does it fit
     }
 
+    bool public mockSocks;
     IRulebook public rules;
+    mapping(bytes32 => SockSnap) commits;
     mapping(uint256 => SockSnap) public registry;
 
     constructor() {
         _initializeOwner(msg.sender);
         // starting rules
+        mockSocks = true;
         rules = new CarteBlanche(address(this));
     }
 
@@ -41,8 +44,15 @@ contract SockSwap is Ownable, ERC6909, ISockSwap {
         uint256 id
     ) public view virtual override returns (string memory) {
         if (totalSupply(id) == 0) revert TokenDoesNotExist();
-        string memory n = rules.check(id)
-            ? LibString.concat(registry[id].category, " socks")
+        string memory n = (mockSocks || rules.check(id))
+            ? string(
+                abi.encodePacked(
+                    registry[id].category,
+                    unicode" socks (№",
+                    LibString.toString(id),
+                    ")"
+                )
+            )
             : "not a sock";
         return
             string(
@@ -58,31 +68,48 @@ contract SockSwap is Ownable, ERC6909, ISockSwap {
             );
     }
 
-    function setRules(address _rules) public onlyOwner {
+    function setRules(address _rules, bool _mockOrNot) public onlyOwner {
         rules = IRulebook(_rules);
+        mockSocks = _mockOrNot;
     }
 
-    function register(
-        uint256 id,
+    function commit(
+        bytes32 _preReg,
         string memory category,
         string memory size,
         string memory photo
     ) public {
-        require(totalSupply(id) == 0);
-        SockSnap storage new_socks = registry[id];
+        SockSnap storage new_socks = commits[_preReg];
         new_socks.category = LibString.escapeJSON(category, true);
         new_socks.size = size;
         new_socks.photo = photo;
-        require(_charCount(id) > 3, "definitely not a sock");
-        emit NewSockDiscovered(id, msg.sender, photo);
+        require(_charCount(_preReg) > 3, "definitely not a sock");
+    }
+
+    // reveal
+    function register(uint256 id, bytes32 salt, bytes32 _preReg) public {
+        require(totalSupply(id) == 0);
+        require(_charCount(_preReg) > 0);
+        require(_preReg == keccak256(abi.encodePacked(id, salt)));
+        registry[id] = commits[_preReg];
+        delete commits[_preReg];
+        emit NewSockDiscovered(id, msg.sender, registry[id].photo);
+    }
+
+    function _charCount(bytes32 _preReg) private view returns (uint256) {
+        SockSnap memory to_check = commits[_preReg];
+        return
+            bytes(to_check.category).length +
+            bytes(to_check.photo).length +
+            bytes(to_check.size).length;
     }
 
     function _charCount(uint256 id) private view returns (uint256) {
         SockSnap memory to_check = registry[id];
         return
-            LibString.runeCount(to_check.category) +
-            LibString.runeCount(to_check.photo) +
-            LibString.runeCount(to_check.size);
+            bytes(to_check.category).length +
+            bytes(to_check.photo).length +
+            bytes(to_check.size).length;
     }
 
     function _regCheck(uint256 id) external view returns (bool) {

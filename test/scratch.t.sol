@@ -23,16 +23,21 @@ contract SockPuppet is Test {
     }
 
     function test_lessgo() public {
-        ss.register(123, "black", "XL", unicode"🧦");
+        bytes32 salt = hex"abc123";
+        bytes32 pr = keccak256(abi.encodePacked(uint256(123), salt));
+
+        ss.commit(pr, "black", "XL", unicode"🧦");
+        ss.register(123, salt, pr);
+
         vm.expectRevert();
-        ss.register(1, "", "", "");
-        console2.log(ss._regCheck(1));
+        ss.register(123, salt, pr);
+
         ss.mint(address(2), 123, 1);
         vm.prank(address(2));
         // ss.setOperator(address(this), true);
         ss.approve(address(this), 123, 999);
-        console2.log(ss.allowance(address(2), address(this), 123));
-        // console2.log(ss.tokenURI(123));
+        // console2.log(ss.allowance(address(2), address(this), 123));
+        console2.log(ss.tokenURI(123));
         ss.redeem(address(2), 123, 1);
     }
 }
