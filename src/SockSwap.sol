@@ -61,9 +61,9 @@ contract SockSwap is Ownable, ERC6909, ISockSwap {
                     n,
                     '", "image":"',
                     registry[id].photo,
-                    '", "attributes": [{ "trait_type": "size", "value": ',
+                    '", "attributes": [{ "trait_type": "size", "value": "',
                     registry[id].size,
-                    "}]}"
+                    "\"}]}"
                 )
             );
     }

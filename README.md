@@ -1,5 +1,8 @@
 to get up and running
-`forge install vectorized/solady --no-commit --no-git`
+```
+forge install vectorized/solady --no-commit --no-git
+forge install foundry-rs/forge-std --no-commit --no-git // :^)
+```
 
 dope resources that helped me
 

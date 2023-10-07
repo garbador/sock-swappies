@@ -19,7 +19,7 @@ contract SockPuppet is Test {
     function test_ownership() public {
         vm.prank(address(0x69));
         vm.expectRevert();
-        ss.setRules(address(1));
+        ss.setRules(address(1), true);
     }
 
     function test_lessgo() public {
