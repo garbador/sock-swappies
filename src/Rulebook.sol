@@ -3,7 +3,7 @@ pragma solidity ^0.8.21;
 import "./interfaces.sol";
 
 contract CarteBlanche is IRulebook {
-    uint256 public timeout = 0;
+    uint32 public timeout = 0;
     address immutable daSwap;
 
     constructor(address parent) {
@@ -14,7 +14,7 @@ contract CarteBlanche is IRulebook {
         return !ISockSwap(daSwap)._regCheck(id);
     }
 
-    function exists(uint256 id, uint256 _amount) external returns (bool) {
+    function exists(uint256 id, uint256 _amount) external view returns (bool) {
         return ISockSwap(daSwap)._regCheck(id);
     }
 }
